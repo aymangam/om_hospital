@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.module.category" id="module_category_hospital">
+            <field name="name">Hospital</field>
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="group_hospital_receptionist" model="res.groups">
+            <field name="name">Receptionist</field>
+            <field name="category_id" ref="om_hospital.module_category_hospital"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">this user will have access to Appointments.</field>
+        </record>
+
+        <record id="group_hospital_doctors" model="res.groups">
+            <field name="name">Doctors</field>
+            <field name="category_id" ref="om_hospital.module_category_hospital"/>
+            <field name="implied_ids" eval="[(4, ref('om_hospital.group_hospital_receptionist'))]"/>
+            <field name="comment">this user will have access to Patient details.</field>
+        </record>
+
+        <record id="receptionist_own_appointment_rule" model="ir.rule">
+            <field name="name">Receptionest: view own records</field>
+            <field name="model_id" ref="model_hospital_appointment"/>
+            <field name="groups" eval="[Command.link(ref('om_hospital.group_hospital_receptionist'))]"/>
+            <field name="domain_force">[('create_uid', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+        <record id="doctor_view_all_appointment_rule" model="ir.rule">
+            <field name="name">Doctor: view all records</field>
+            <field name="model_id" ref="model_hospital_appointment"/>
+            <field name="groups" eval="[Command.link(ref('om_hospital.group_hospital_doctors'))]"/>
+            <field name="domain_force">[]</field>
+        </record>
+
+    </data>
+</odoo>

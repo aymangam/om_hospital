@@ -1,0 +1,63 @@
+<odoo>
+    <data>
+        <!-- explicit list view definition -->
+
+        <record id="hospital_patient_readonly_view_tree" model="ir.ui.view">
+            <field name="name">hospital_patient_tree</field>
+            <field name="model">hospital.patient</field>
+            <field name="priority">20</field>
+            <field name="arch" type="xml">
+                <tree string="Patient" create="0" edit="0" delete="0">
+                    <field name="name"/>
+                    <field name="gander" optional="show"/>
+                    <field name="date_of_birth" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+        <record id="hospital_patient_readonly_view_form" model="ir.ui.view">
+            <field name="name">hospital_patient_form</field>
+            <field name="model">hospital.patient</field>
+            <field name="arch" type="xml">
+                <form string="Patient" create="0" edit="0" delete="0">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="date_of_birth"/>
+                            </group>
+                            <group>
+                                <field name="gander"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" groups="base.group_user"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+        <!-- actions opening views on models -->
+        <record model="ir.actions.act_window" id="action_hospital_readonly_patient">
+            <field name="name">View Patients</field>
+            <field name="res_model">hospital.patient</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_ids" eval="[Command.clear(),
+                          (0,0,{'view_mode':'tree', 'view_id': ref('hospital_patient_readonly_view_tree')}),
+                          (0,0,{'view_mode':'form', 'view_id': ref('hospital_patient_readonly_view_form')})]"/>
+            <field name="search_view_id" ref="hospital_patient_view_search"/>
+            <field name="context">{'search_default_male': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Ready to add first patient
+                </p>
+                <p>
+                    Let's create one.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>
